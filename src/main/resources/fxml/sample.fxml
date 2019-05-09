@@ -41,7 +41,11 @@
              </Label>
              <Button id="importButton" fx:id="importButton" layoutX="138.0" layoutY="459.0" mnemonicParsing="false" onAction="#importData" text="Import" />
              <RadioButton id="todaySelect" fx:id="todaySelect" layoutX="246.0" layoutY="464.0" mnemonicParsing="false" onAction="#selectTodaysTasks" text="Mai feladatok" />
-             <Button id="deleteAllButton" fx:id="deleteAllButton" layoutX="513.0" layoutY="459.0" mnemonicParsing="false" onAction="#deleteAll" text="Összes törlése" />
+             <Button id="deleteAllButton" fx:id="deleteAllButton" layoutX="423.0" layoutY="459.0" mnemonicParsing="false" onAction="#deleteAll" text="Összes törlése" />
+            <Label alignment="CENTER_RIGHT" layoutX="609.0" layoutY="449.0" prefHeight="21.0" prefWidth="114.0" text="Mai feladatok:" />
+            <Label layoutX="609.0" layoutY="485.0" text="Fontos feladatok:" />
+            <Label id="todayTasksLabel" fx:id="todayTasksLabel" layoutX="757.0" layoutY="449.0" />
+            <Label id="highPriorityTasksLabel" fx:id="highPriorityTasksLabel" layoutX="757.0" layoutY="485.0" />
 
          </children>
       </Pane>

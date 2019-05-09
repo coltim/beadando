@@ -1,6 +1,8 @@
 package controller;
 
 import IO.IOHandler;
+import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -20,6 +22,8 @@ import javafx.stage.FileChooser;
 import javafx.util.Callback;
 import javafx.util.converter.DefaultStringConverter;
 import model.Task;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.net.URL;
@@ -34,6 +38,8 @@ import java.util.ResourceBundle;
  */
 
 public class ViewController implements Initializable {
+
+    private static Logger logger = LoggerFactory.getLogger(ViewController.class);
 
     /**
      * Az adatokat tartalmazó táblázat.
@@ -91,18 +97,26 @@ public class ViewController implements Initializable {
     @FXML
     Button exportButton;
 
+    @FXML
+    Label highPriorityTasksLabel;
+
+    @FXML
+    Label todayTasksLabel;
+
+
     /**
      * A feladatokat tartalmazó listanézet.
      */
     private ObservableList<Task> tasks = FXCollections.observableArrayList();
 
-   /* public ObservableList<Task> getTasks() {
+   public ObservableList<Task> getTasks() {
         return tasks;
     }
 
     public void setTasks(ObservableList<Task> tasks) {
         this.tasks.addAll(tasks);
-    }*/
+    }
+
 
     /**
      * A prioritást kiválasztó legördülő menühöz tartozó választható értékek.
@@ -127,7 +141,9 @@ public class ViewController implements Initializable {
             inputTask.clear();
             priorityComboBox.setValue(null);
             datePicker.setValue(null);
+            logger.info("Uj feladat hozzaadasa");
         }
+        setNumbers();
     }
 
 
@@ -153,6 +169,7 @@ public class ViewController implements Initializable {
         File file = fileChooser.showSaveDialog(null);
         System.out.println(file);
         IOHandler.XmlWriter(file,tasks);
+        logger.info(file + " exportalasa");
     }
 
     /**
@@ -179,6 +196,8 @@ public class ViewController implements Initializable {
         }
 
         table.setItems(tasks);
+
+        logger.info(imput + " importalasa");
 
     }
 
@@ -215,6 +234,7 @@ public class ViewController implements Initializable {
         System.out.println("deleteall");
         tasks = FXCollections.observableArrayList();
         table.getItems().clear();
+        setNumbers();
     }
 
 
@@ -224,7 +244,7 @@ public class ViewController implements Initializable {
     private void setTableData(){
         File startFile = new File("tasks.xml");
         System.out.println(startFile);
-        List<Task> XmlDBList = new ArrayList<>();
+        List<Task> XmlDBList = null;
         File currentDirFile = new File("tasks.xml");
         String helper = currentDirFile.getAbsolutePath();
         System.out.println(helper);
@@ -233,6 +253,8 @@ public class ViewController implements Initializable {
         }else {
             IOHandler.XmlWriter(currentDirFile, XmlDBList);
         }
+
+        logger.info("Tablazat feltoltese");
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MMM-dd");
 
@@ -280,21 +302,19 @@ public class ViewController implements Initializable {
                         (event.getTableView().getItems().get(
                                 event.getTablePosition().getRow())
                         ).setPriority(event.getNewValue());
+                        setNumbers();
                     }
                 }
+
         );
 
+//     ez jo eddig
         TableColumn doneCol = new TableColumn("Kesz");
         doneCol.setMinWidth(60);
         doneCol.setSortable(false);
 
+        doneCol.setCellValueFactory(new PropertyValueFactory<Task, Boolean>("done"));
         doneCol.setCellFactory(CheckBoxTableCell.forTableColumn(new TableColumn<>()));
-        doneCol.setCellValueFactory(new PropertyValueFactory<Task, String>("done"));
-      /*  doneCol.setCellValueFactory(
-                new PropertyValueFactory<Task, String>("done")
-        );
-
-        doneCol.setCellFactory(CheckBoxTableCell.forTableColumn(dateCol.));*/
 
 
 
@@ -320,6 +340,7 @@ public class ViewController implements Initializable {
                                         Task task = getTableView().getItems().get(getIndex());
                                         tasks.remove(task);
                                         System.out.println(task);
+                                        setNumbers();
                                     });
                                     setGraphic(btn);
                                     setText(null);
@@ -327,6 +348,7 @@ public class ViewController implements Initializable {
                             }
                         };
                         return cell;
+
                     }
                 };
 
@@ -340,6 +362,13 @@ public class ViewController implements Initializable {
         }
 
         table.setItems(tasks);
+        setNumbers();
+    }
+
+    private void setNumbers(){
+
+        todayTasksLabel.setText("" + TaskReport.todayTasksNumber(tasks));
+        highPriorityTasksLabel.setText("" + TaskReport.highPriorityTasksNumber(tasks));
     }
 
     /**
@@ -371,6 +400,8 @@ public class ViewController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+
         setTableData();
+        setNumbers();
     }
 }

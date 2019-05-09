@@ -32,9 +32,6 @@ public class IOTest {
     Task task2 = new Task("proba", "Alacsony", LocalDate.of(2019, Month.JANUARY, 1), true);
 
 
-    //@TempDir
-    //Path output ;
-
 
     @BeforeEach
     void setUp() {

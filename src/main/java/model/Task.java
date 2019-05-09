@@ -117,11 +117,11 @@ public class Task {
     public boolean isDone() {
         return done.get();
     }
-/*
+
 
     public BooleanProperty doneProperty() {
         return done;
-    }*/
+    }
 
     /**
      * Beállítja, hogy kész van e a feladat.
