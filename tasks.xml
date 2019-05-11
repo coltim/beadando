@@ -1,21 +1,27 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <tasks>
-<task>
-<taskDesc>mai</taskDesc>
-<priority>Közepes</priority>
-<date>2019-05-08</date>
-<done>false</done>
-</task>
-<task>
-<taskDesc>asdf</taskDesc>
-<priority>Magas</priority>
-<date>2019-05-09</date>
-<done>false</done>
-</task>
-<task>
-<taskDesc>dejo</taskDesc>
-<priority>Magas</priority>
-<date>2019-05-07</date>
-<done>false</done>
-</task>
+    <task>
+        <taskDesc>mai</taskDesc>
+        <priority>Közepes</priority>
+        <date>2019-05-08</date>
+        <done>true</done>
+    </task>
+    <task>
+        <taskDesc>asdf</taskDesc>
+        <priority>Magas</priority>
+        <date>2019-05-09</date>
+        <done>true</done>
+    </task>
+    <task>
+        <taskDesc>dejo</taskDesc>
+        <priority>Magas</priority>
+        <date>2019-05-07</date>
+        <done>true</done>
+    </task>
+    <task>
+        <taskDesc>kalacs</taskDesc>
+        <priority>Alacsony</priority>
+        <date>2019-05-11</date>
+        <done>false</done>
+    </task>
 </tasks>

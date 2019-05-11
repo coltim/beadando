@@ -1,6 +1,9 @@
 package IO;
 
+import controller.ViewController;
 import model.Task;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -27,16 +30,14 @@ import java.util.List;
  */
 public class IOHandler {
 
+    private static Logger logger = LoggerFactory.getLogger(IOHandler.class);
+
     /**
      * KiÍrja xml-be a feladatok listáját, a kiválasztott helyre.
      * @param outputPath a menteni kivánt hely elérési útja
      * @param tasks feladatok listája
      */
     public static void XmlWriter(File outputPath, List<Task> tasks) {
-
-        for(Task t : tasks){
-            System.out.println(t);
-        }
 
         try {
             DocumentBuilderFactory dbf = javax.xml.parsers.DocumentBuilderFactory.newInstance();
@@ -77,13 +78,11 @@ public class IOHandler {
             transformer.transform(source, result);
 
         } catch (ParserConfigurationException e) {
-            e.printStackTrace();
+            logger.error("Nem sikerult letrehozni a DocumentBuildert: " + e);
         } catch (TransformerConfigurationException e) {
-            e.printStackTrace();
-            System.out.println("nem sikerult a transzformalas");
+            logger.error("Nem sikerult a transzformalas: " + e);
         } catch (TransformerException e) {
-            e.printStackTrace();
-            System.out.println("nem sikerult menteni");
+            logger.error("Nem sikerult menteni a felepitett fat: " + e);
         }
     }
 
@@ -110,21 +109,21 @@ public class IOHandler {
 
                 if(node.getNodeType() == Node.ELEMENT_NODE){
                     Element element = (Element) node;
-                    String tascDescDB = element.getElementsByTagName("taskDesc").item(0).getTextContent();
+                    String taskDescDB = element.getElementsByTagName("taskDesc").item(0).getTextContent();
                     String priorityDB = element.getElementsByTagName("priority").item(0).getTextContent();
                     LocalDate localDateDB = LocalDate.parse(element.getElementsByTagName("date").item(0).getTextContent());
                     Boolean doneDB = Boolean.parseBoolean(element.getElementsByTagName("done").item(0).getTextContent());
-                    System.out.println(doneDB);
-                    tasksDB.add(new Task(tascDescDB,priorityDB, localDateDB, doneDB));
+                    tasksDB.add(new Task(taskDescDB,priorityDB, localDateDB, doneDB));
                 }
             }
 
         } catch (ParserConfigurationException e) {
-            e.printStackTrace();
+            logger.error("Nem sikerult letrehozni a DocumentBuildert: " + e);
         } catch (SAXException e) {
-            e.printStackTrace();
+            logger.error("Elemzesi hiba keletkezett a parse-nal: " +e);
         } catch (IOException e) {
             e.printStackTrace();
+            logger.error("IO error a parse-nal: " +e);
         }
         return tasksDB;
     }

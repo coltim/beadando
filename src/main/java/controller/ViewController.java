@@ -1,8 +1,6 @@
 package controller;
 
 import IO.IOHandler;
-import javafx.beans.property.SimpleBooleanProperty;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -29,7 +27,6 @@ import java.io.File;
 import java.net.URL;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -96,10 +93,14 @@ public class ViewController implements Initializable {
      */
     @FXML
     Button exportButton;
-
+    /**
+     * "Fontos feladatok" label
+     */
     @FXML
     Label highPriorityTasksLabel;
-
+    /**
+     * "Mai feladatok" label
+     */
     @FXML
     Label todayTasksLabel;
 
@@ -108,7 +109,7 @@ public class ViewController implements Initializable {
      * A feladatokat tartalmazó listanézet.
      */
     private ObservableList<Task> tasks = FXCollections.observableArrayList();
-
+/*
    public ObservableList<Task> getTasks() {
         return tasks;
     }
@@ -116,7 +117,7 @@ public class ViewController implements Initializable {
     public void setTasks(ObservableList<Task> tasks) {
         this.tasks.addAll(tasks);
     }
-
+*/
 
     /**
      * A prioritást kiválasztó legördülő menühöz tartozó választható értékek.
@@ -131,7 +132,6 @@ public class ViewController implements Initializable {
     @FXML
     private void addNewTask() {
         String taskText = inputTask.getText();
-      //String priorityText = priorityComboBox.getValue().toString();
         LocalDate date = datePicker.getValue();
 
         if (taskText.length()<1 || priorityComboBox.getSelectionModel().isEmpty() || date == null){
@@ -141,11 +141,11 @@ public class ViewController implements Initializable {
             inputTask.clear();
             priorityComboBox.setValue(null);
             datePicker.setValue(null);
+            setNumbers();
             logger.info("Uj feladat hozzaadasa");
         }
-        setNumbers();
-    }
 
+    }
 
     /**
      * Xml-be exprtálja az adatokat a megadott helyre, a "Mentés" gomb megnyomásakor.
@@ -153,7 +153,7 @@ public class ViewController implements Initializable {
     @FXML
     private void exportData() {
         FileChooser fileChooser = new FileChooser();
-        fileChooser.setTitle("Feladatok exportalasa");
+        fileChooser.setTitle("Feladatok exportálása");
 
         fileChooser.setInitialDirectory(
                 new File(System.getProperty("user.home"))
@@ -167,7 +167,6 @@ public class ViewController implements Initializable {
         fileChooser.getExtensionFilters().add(xmlExtensionFilter);
         fileChooser.setSelectedExtensionFilter(xmlExtensionFilter);
         File file = fileChooser.showSaveDialog(null);
-        System.out.println(file);
         IOHandler.XmlWriter(file,tasks);
         logger.info(file + " exportalasa");
     }
@@ -179,17 +178,16 @@ public class ViewController implements Initializable {
     private void importData () {
 
         tasks = FXCollections.observableArrayList();
-        //table.getItems().clear();
 
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Feladatok importálása");
-        FileChooser.ExtensionFilter filter = new FileChooser.ExtensionFilter("xml file plese", "*.xml");
+        FileChooser.ExtensionFilter filter = new FileChooser.ExtensionFilter("xml file please", "*.xml");
 
         fileChooser.getExtensionFilters().add(filter);
 
-        File imput = fileChooser.showOpenDialog(null);
+        File input = fileChooser.showOpenDialog(null);
 
-        List<Task> importXmlDBList = IOHandler.XmlReader(imput);
+        List<Task> importXmlDBList = IOHandler.XmlReader(input);
 
         for (Task currTask : importXmlDBList) {
             tasks.addAll(currTask);
@@ -197,8 +195,7 @@ public class ViewController implements Initializable {
 
         table.setItems(tasks);
 
-        logger.info(imput + " importalasa");
-
+        logger.info(input + " importalasa");
     }
 
     /**
@@ -207,13 +204,10 @@ public class ViewController implements Initializable {
     @FXML
     private void selectTodaysTasks() {
         ObservableList<Task> todayTasks = FXCollections.observableArrayList();
-        System.out.println("maitaskok");
-        System.out.println(todaySelect.isSelected());
         LocalDate dateNow = LocalDate.now();
 
         for (Task t : tasks) {
             if (t.getTaskDate().getDayOfYear() == dateNow.getDayOfYear()) {
-                System.out.println(t);
                 todayTasks.addAll(t);
             }
         }
@@ -223,6 +217,7 @@ public class ViewController implements Initializable {
         } else {
             table.setItems(tasks);
         }
+        logger.info("Mai feladatok megjelenitese");
     }
 
 
@@ -231,10 +226,10 @@ public class ViewController implements Initializable {
      */
     @FXML
     private void deleteAll(){
-        System.out.println("deleteall");
         tasks = FXCollections.observableArrayList();
         table.getItems().clear();
         setNumbers();
+        logger.info("Osszes feladat torlese");
     }
 
 
@@ -243,22 +238,21 @@ public class ViewController implements Initializable {
      */
     private void setTableData(){
         File startFile = new File("tasks.xml");
-        System.out.println(startFile);
         List<Task> XmlDBList = null;
         File currentDirFile = new File("tasks.xml");
         String helper = currentDirFile.getAbsolutePath();
-        System.out.println(helper);
         if(startFile.exists()){
             XmlDBList = IOHandler.XmlReader(startFile.getAbsoluteFile());
         }else {
             IOHandler.XmlWriter(currentDirFile, XmlDBList);
         }
 
-        logger.info("Tablazat feltoltese");
+        logger.info("Tablazat feltoltese a " + startFile + " fajlbol");
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MMM-dd");
 
-        TableColumn dateCol = new TableColumn("Datum");
+        //Datum oszlop
+        TableColumn dateCol = new TableColumn("Dátum");
         dateCol.setMinWidth(100);
         dateCol.setCellFactory(tc -> new TableCell<Task, LocalDate>() {
             @Override
@@ -271,30 +265,29 @@ public class ViewController implements Initializable {
                 }
             }
         });
-
         dateCol.setCellValueFactory(new PropertyValueFactory<>("taskDate"));
 
+        //Feladat oszlop
         TableColumn taskCol = new TableColumn("Feladat");
         taskCol.setMinWidth(400);
         taskCol.setCellFactory(TextFieldTableCell.forTableColumn());
         taskCol.setCellValueFactory(new PropertyValueFactory<Task, String>("taskDesc"));
-
         taskCol.setOnEditCommit(
                 new EventHandler<TableColumn.CellEditEvent<Task, String>>() {
                     @Override
                     public void handle(TableColumn.CellEditEvent<Task, String> event) {
-                        ((Task) event.getTableView().getItems().get(
+                        (event.getTableView().getItems().get(
                                 event.getTablePosition().getRow())
                         ).setTaskDesc(event.getNewValue());
                     }
                 }
         );
 
-        TableColumn priorityCol = new TableColumn("Fontossag");
+        //Fontossag oszlop
+        TableColumn priorityCol = new TableColumn("Fontosság");
         priorityCol.setMinWidth(120);
         priorityCol.setCellFactory(ComboBoxTableCell.forTableColumn(new DefaultStringConverter(), priorityData));
         priorityCol.setCellValueFactory(new PropertyValueFactory<Task, String>("priority"));
-
         priorityCol.setOnEditCommit(
                 new EventHandler<TableColumn.CellEditEvent<Task, String>>() {
                     @Override
@@ -305,22 +298,19 @@ public class ViewController implements Initializable {
                         setNumbers();
                     }
                 }
-
         );
 
-//     ez jo eddig
-        TableColumn doneCol = new TableColumn("Kesz");
+        //Kesz oszlop
+        TableColumn doneCol = new TableColumn("Kész");
         doneCol.setMinWidth(60);
         doneCol.setSortable(false);
-
         doneCol.setCellValueFactory(new PropertyValueFactory<Task, Boolean>("done"));
         doneCol.setCellFactory(CheckBoxTableCell.forTableColumn(new TableColumn<>()));
 
 
-
+        //Torles oszlop
         TableColumn deleteCol = new TableColumn("Törlés");
         deleteCol.setMinWidth(100);
-
         Callback<TableColumn<Task, String>, TableCell<Task, String>> cellFactory =
                 new Callback<TableColumn<Task, String>, TableCell<Task, String>>() {
                     @Override
@@ -339,7 +329,7 @@ public class ViewController implements Initializable {
                                     {
                                         Task task = getTableView().getItems().get(getIndex());
                                         tasks.remove(task);
-                                        System.out.println(task);
+                                        logger.info(task + " torlese");
                                         setNumbers();
                                     });
                                     setGraphic(btn);
@@ -348,10 +338,8 @@ public class ViewController implements Initializable {
                             }
                         };
                         return cell;
-
                     }
                 };
-
         deleteCol.setCellFactory(cellFactory);
 
 
@@ -366,9 +354,8 @@ public class ViewController implements Initializable {
     }
 
     private void setNumbers(){
-
-        todayTasksLabel.setText("" + TaskReport.todayTasksNumber(tasks));
-        highPriorityTasksLabel.setText("" + TaskReport.highPriorityTasksNumber(tasks));
+        todayTasksLabel.setText("" + TaskReport.todayTasksNumber(tasks) + " db");
+        highPriorityTasksLabel.setText("" + TaskReport.highPriorityTasksNumber(tasks) + " db");
     }
 
     /**
@@ -396,12 +383,11 @@ public class ViewController implements Initializable {
         anchor.getChildren().add(vbox);
         anchor.setTopAnchor(vbox, 250.0);
         anchor.setLeftAnchor(vbox, 360.0);
+        logger.info("Figyelmezteto ablak megjelenese");
     }
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-
         setTableData();
-        setNumbers();
     }
 }

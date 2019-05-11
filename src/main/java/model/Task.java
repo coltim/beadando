@@ -25,7 +25,6 @@ public class Task {
     public Task() {
         this.taskDesc = new SimpleStringProperty("");
         this.priority = new SimpleStringProperty("");
-        //this.done = new SimpleStringProperty("");
         this.taskDate = LocalDate.now();
         this.done = new SimpleBooleanProperty();
     }
@@ -42,7 +41,6 @@ public class Task {
         this.priority = new SimpleStringProperty(priority);
         this.done = new SimpleBooleanProperty(false);
         this.taskDate = taskDate;
-        //this.done = new Checkbox();
     }
 
     /**
@@ -58,7 +56,6 @@ public class Task {
         this.priority = new SimpleStringProperty(priority);
         this.done = new SimpleBooleanProperty(done);
         this.taskDate = taskDate;
-        //this.done = new Checkbox();
     }
 
 
@@ -138,10 +135,10 @@ public class Task {
     @Override
     public String toString() {
         return "Task{" +
-                "taskDesc=" + taskDesc +
-                ", priority=" + priority +
+                "taskDesc=" + taskDesc.getValue() +
+                ", priority=" + priority.getValue() +
                 ", taskDate=" + taskDate +
-                ", done=" + done +
+                ", done=" + done.getValue() +
                 '}';
     }
 

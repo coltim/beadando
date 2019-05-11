@@ -1,12 +1,16 @@
 package controller;
 
-import javafx.collections.ObservableList;
 import model.Task;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.time.LocalDate;
 import java.util.List;
 
 public class TaskReport {
+
+    private static Logger logger = LoggerFactory.getLogger(TaskReport.class);
+
     public static int todayTasksNumber(List<Task> tasks){
 
         LocalDate dateNow = LocalDate.now();
@@ -16,6 +20,7 @@ public class TaskReport {
                 count++;
             }
         }
+        logger.info("Mai feladatok ujraszamolasa");
         return count;
     }
 
@@ -27,6 +32,7 @@ public class TaskReport {
                 count++;
             }
         }
+        logger.info("Magas prioritasu feladatok ujraszamolasa");
         return count;
     }
 }
