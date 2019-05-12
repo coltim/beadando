@@ -108,7 +108,7 @@ public class Task {
     }
 
     /**
-     * Visszaadja, hogy kész-e a feladat.
+     * Visszaadja a <code>done</code> változó értékét.
      * @return boolean típusú változó
      */
     public boolean isDone() {
@@ -116,6 +116,10 @@ public class Task {
     }
 
 
+    /**
+     * Visszaadja, hogy kész-e a feladat.
+     * @return BooleanProperty típusú változó
+     */
     public BooleanProperty doneProperty() {
         return done;
     }

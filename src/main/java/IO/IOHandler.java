@@ -30,6 +30,9 @@ import java.util.List;
  */
 public class IOHandler {
 
+    /**
+     * Példányosított Logger osztály.
+     */
     private static Logger logger = LoggerFactory.getLogger(IOHandler.class);
 
     /**

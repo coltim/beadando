@@ -27,6 +27,7 @@ import java.io.File;
 import java.net.URL;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -36,6 +37,9 @@ import java.util.ResourceBundle;
 
 public class ViewController implements Initializable {
 
+    /**
+     * Példányosított Logger osztály.
+     */
     private static Logger logger = LoggerFactory.getLogger(ViewController.class);
 
     /**
@@ -94,12 +98,12 @@ public class ViewController implements Initializable {
     @FXML
     Button exportButton;
     /**
-     * "Fontos feladatok" label
+     * "Fontos feladatok" label.
      */
     @FXML
     Label highPriorityTasksLabel;
     /**
-     * "Mai feladatok" label
+     * "Mai feladatok" label.
      */
     @FXML
     Label todayTasksLabel;
@@ -194,6 +198,7 @@ public class ViewController implements Initializable {
         }
 
         table.setItems(tasks);
+        setNumbers();
 
         logger.info(input + " importalasa");
     }
@@ -238,13 +243,13 @@ public class ViewController implements Initializable {
      */
     private void setTableData(){
         File startFile = new File("tasks.xml");
-        List<Task> XmlDBList = null;
+        List<Task> XmlDBList = new ArrayList<Task>() {};
         File currentDirFile = new File("tasks.xml");
         String helper = currentDirFile.getAbsolutePath();
         if(startFile.exists()){
             XmlDBList = IOHandler.XmlReader(startFile.getAbsoluteFile());
         }else {
-            IOHandler.XmlWriter(currentDirFile, XmlDBList);
+            IOHandler.XmlWriter(startFile.getAbsoluteFile(), XmlDBList);
         }
 
         logger.info("Tablazat feltoltese a " + startFile + " fajlbol");
@@ -353,6 +358,9 @@ public class ViewController implements Initializable {
         setNumbers();
     }
 
+    /**
+     * A <code>TaskReport</code> osztály metódusait tartalmazza, amely kiszámolja a mai, és a fontos feladatokat.
+     */
     private void setNumbers(){
         todayTasksLabel.setText("" + TaskReport.todayTasksNumber(tasks) + " db");
         highPriorityTasksLabel.setText("" + TaskReport.highPriorityTasksNumber(tasks) + " db");
