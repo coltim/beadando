@@ -1,6 +1,6 @@
 package tests;
 
-import controller.TaskReport;
+import model.TaskReport;
 import model.Task;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;

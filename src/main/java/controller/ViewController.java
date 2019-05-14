@@ -20,6 +20,7 @@ import javafx.stage.FileChooser;
 import javafx.util.Callback;
 import javafx.util.converter.DefaultStringConverter;
 import model.Task;
+import model.TaskReport;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -171,8 +172,11 @@ public class ViewController implements Initializable {
         fileChooser.getExtensionFilters().add(xmlExtensionFilter);
         fileChooser.setSelectedExtensionFilter(xmlExtensionFilter);
         File file = fileChooser.showSaveDialog(null);
-        IOHandler.XmlWriter(file,tasks);
-        logger.info(file + " exportalasa");
+
+        if(file == null){
+            alert("Nem adtál meg mentési helyet!");
+        }else {IOHandler.XmlWriter(file,tasks);
+            logger.info(file + " exportalasa");}
     }
 
     /**
@@ -191,16 +195,20 @@ public class ViewController implements Initializable {
 
         File input = fileChooser.showOpenDialog(null);
 
-        List<Task> importXmlDBList = IOHandler.XmlReader(input);
+        if(input != null){
+            List<Task> importXmlDBList = IOHandler.XmlReader(input);
 
-        for (Task currTask : importXmlDBList) {
-            tasks.addAll(currTask);
+            for (Task currTask : importXmlDBList) {
+                tasks.addAll(currTask);
+            }
+
+            table.setItems(tasks);
+            setNumbers();
+
+            logger.info(input + " importalasa");
+        }else{
+            alert("Nem választottál ki xml fájlt!");
         }
-
-        table.setItems(tasks);
-        setNumbers();
-
-        logger.info(input + " importalasa");
     }
 
     /**
